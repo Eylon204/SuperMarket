@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermarket</title>
+    <link rel="stylesheet" href="Style.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="display">
+        <p>Welcome To Our Super</p>
+        <hr>
+        <h1>Cart</h1>
+        <div id="MyCart"></div>
+        <p>Total: $<span id="totalAmount">0</span></p>
+        <a href="Checkout.html"> <button class="checkout-button" onclick="checkout()">Checkout</button></a>
+        <hr>
+        <div class="category-buttons">
+            <button onclick="filterByCategory('Eggs and Meats')">Eggs and Meats</button>
+            <button onclick="filterByCategory('Fast Food')">Fast Food</button>
+            <button onclick="filterByCategory('Dairy Products')">Dairy Products</button>
+            <button onclick="filterByCategory('Spices and Miscellaneous')">Spices and Miscellaneous</button>
+            <button onclick="filterByCategory('Fruits')">Fruits</button>
+            <button onclick="filterByCategory('Beverages')">Beverages</button>
+            <button onclick="filterByCategory('Nuts and Snacks')">Nuts and Snacks</button>
+            <button onclick="filterByCategory('Sweets')">Sweets</button>
+        </div>
+        <hr>
+        <div id="Products"></div>
+    </div>
+
+    <script>
+        let Cart = [];
+        let Total = 0;
+
+        let ProductsList = [
+            { name: 'pizza', price: 45, category: 'Fast Food' },
+            { name: 'milk', price: 6, category: 'Dairy Products' },
+            { name: 'eggs', price: 12, category: 'Eggs and Meats' },
+            { name: 'meat', price: 75, category: 'Eggs and Meats' },
+            { name: 'cheese', price: 25, category: 'Dairy Products' },
+            { name: 'juice', price: 10, category: 'Beverages' },
+            { name: 'bread', price: 12, category: 'Baked Goods and Grains' },
+            { name: 'butter', price: 15, category: 'Dairy Products' },
+            { name: 'coffee', price: 30, category: 'Beverages' },
+            { name: 'pasta', price: 9, category: 'Baked Goods and Grains' },
+            { name: 'sugar', price: 5, category: 'Spices and Miscellaneous' },
+            { name: 'salt', price: 2, category: 'Spices and Miscellaneous' },
+            { name: 'chocolate', price: 18, category: 'Sweets' },
+            { name: 'apples', price: 8, category: 'Fruits' },
+            { name: 'bananas', price: 6, category: 'Fruits' },
+            { name: 'oranges', price: 10, category: 'Fruits' },
+            { name: 'rice', price: 12, category: 'Baked Goods and Grains' },
+            { name: 'chicken', price: 40, category: 'Eggs and Meats' },
+            { name: 'fish', price: 60, category: 'Eggs and Meats' },
+            { name: 'water', price: 3, category: 'Beverages' },
+            { name: 'yogurt', price: 5, category: 'Dairy Products' },
+            { name: 'cereal', price: 20, category: 'Baked Goods and Grains' },
+            { name: 'orange juice', price: 15, category: 'Beverages' },
+            { name: 'tea', price: 12, category: 'Beverages' },
+            { name: 'tomatoes', price: 10, category: 'Vegetables' },
+            { name: 'cucumber', price: 6, category: 'Vegetables' },
+            { name: 'lettuce', price: 7, category: 'Vegetables' },
+            { name: 'grapes', price: 20, category: 'Fruits' },
+            { name: 'peanuts', price: 15, category: 'Nuts and Snacks' },
+            { name: 'chips', price: 12, category: 'Nuts and Snacks' },
+            { name: 'honey', price: 25, category: 'Spices and Miscellaneous' },
+            { name: 'ketchup', price: 8, category: 'Spices and Miscellaneous' },
+            { name: 'mustard', price: 7, category: 'Spices and Miscellaneous' },
+            { name: 'yogurt drink', price: 7, category: 'Beverages' },
+            { name: 'cream', price: 12, category: 'Dairy Products' },
+            { name: 'crackers', price: 10, category: 'Baked Goods and Grains' },
+            { name: 'peaches', price: 18, category: 'Fruits' },
+            { name: 'turkey', price: 85, category: 'Eggs and Meats' },
+            { name: 'beef', price: 120, category: 'Eggs and Meats' },
+            { name: 'sparkling water', price: 4, category: 'Beverages' },
+            { name: 'potato chips', price: 10, category: 'Nuts and Snacks' },
+            { name: 'pretzels', price: 10, category: 'Nuts and Snacks' },
+            { name: 'popcorn', price: 8, category: 'Nuts and Snacks' },
+            { name: 'granola bars', price: 15, category: 'Nuts and Snacks' },
+            { name: 'trail mix', price: 20, category: 'Nuts and Snacks' },
+            { name: 'cookies', price: 12, category: 'Sweets' },
+            { name: 'fruit snacks', price: 10, category: 'Sweets' },
+            { name: 'nachos', price: 18, category: 'Nuts and Snacks' },
+            { name: 'chocolate bar', price: 10, category: 'Sweets' },
+            { name: 'candies', price: 8, category: 'Sweets' }
+        ];
+        function filterByCategory(CatName) {
+            Products.innerHTML = "<ul>" + ProductsList.filter(item => item.category === CatName)
+                .map(item => `
+                <li>
+                    ${item.name}, 
+                    $${item.price}
+                    <button onClick="Buy('${item.name}', ${item.price})">Buy</button>
+                </li>
+            `).join('') + "</ul>";
+        }
+
+        function Buy(name, price) {
+            Cart.push({ name, price });
+            Total += price;
+            renderCart();
+        }
+
+        function renderCart() {
+            MyCart.innerHTML = "<ul>" + Cart.map(item => `
+            <li>
+                ${item.name}, 
+                $${item.price}
+            </li>
+        `).join('') + "</ul>";
+
+            totalAmount.innerText = Total.toFixed(2);
+        }
+        function checkout() {
+            if (Cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            localStorage.setItem('Cart', JSON.stringify(Cart));
+            localStorage.setItem('Total', Total);
+
+            window.location.href = 'checkout.html';
+        }
+
+        filterByCategory('Eggs and Meats');
+    </script>
+</body>
+
+</html>

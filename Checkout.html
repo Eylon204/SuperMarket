@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <link rel="stylesheet" href="Style2.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="summary">
+        <h1>Order Summary</h1>
+        <div id="orderSummary"></div>
+        <p>Total: $<span id="totalAmount">0</span></p>
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script>
+        function loadOrderSummary() {
+            const Cart = JSON.parse(localStorage.getItem('Cart'));
+            const Total = localStorage.getItem('Total');
+
+            if (!Cart || Cart.length === 0) {
+                orderSummary.innerHTML = "<p>Your cart is empty!</p>";
+                return;
+            }
+
+            orderSummary.innerHTML = "<ul>" + Cart.map(item => `
+                <li>
+                    ${item.name}, 
+                    $${item.price}
+                </li>
+            `).join('') + "</ul>";
+
+            totalAmount.innerText = parseFloat(Total).toFixed(2);
+        }
+
+        function placeOrder() {
+            alert("Your order has been placed successfully!");
+            localStorage.removeItem('Cart');
+            localStorage.removeItem('Total');
+            window.location.href = 'index.html';
+        }
+
+        loadOrderSummary();
+    </script>
+</body>
+
+</html>
